@@ -1,14 +1,19 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import 'react-quill/dist/quill.snow.css';
 import dynamic from 'next/dynamic';
 import { ReactQuillProps } from 'react-quill';
+import SaveButton from '../components/SaveButton';
+import Title from '../components/Title';
+import Navbar from '../components/Navbar';
 
 const DynamicReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 
 const Home: NextPage = () => {
+  const [saved, setSaved] = useState(false);
+  const [title, setTitle] = useState('');
   const [value, setvalue] = useState('');
 
   const toolbarOptions = [
@@ -27,6 +32,11 @@ const Home: NextPage = () => {
     }
   } 
 
+  const handleTitleChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    setSaved(false);
+    setTitle(e.currentTarget.value);
+  }
+
   return (
     <div>
       <Head>
@@ -36,12 +46,18 @@ const Home: NextPage = () => {
       </Head>
 
       <main className='flex flex-col items-center w-full h-screen bg-[#EAE5D3]'>
-        <nav className='bg-zinc-800 p-2 text-center w-full'>
-          <h1 className='text-xl text-zinc-100'>Papyr.it</h1>
-        </nav>
+        <Navbar />
         
-        <div className='w-[816px]'>
-          <DynamicReactQuill {...reactQuillProps}></DynamicReactQuill>
+        <div className='flex items-center justify-center h-full'>
+          <div className='w-[816px] space-y-10 bg-[#f3eed9] p-10 rounded-xl h-5/6 min-h-fit'>
+            
+            <div className='flex items-center space-x-5 text-3xl font-bold'>
+              <Title title={title} setTitle={handleTitleChange} />
+              <SaveButton saved={saved} setSaved={setSaved} />
+            </div>
+
+            <DynamicReactQuill {...reactQuillProps} className='h-[70%]' id='editor'></DynamicReactQuill>
+          </div>
         </div>
 
       </main>
