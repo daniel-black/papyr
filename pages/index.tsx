@@ -14,19 +14,27 @@ const DynamicReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 const Home: NextPage = () => {
   const [saved, setSaved] = useState(false);
   const [title, setTitle] = useState('');
-  const [value, setvalue] = useState('');
+  const [value, setValue] = useState('');
+  const [isPreviewing, setIsPreviewing] = useState(false);
+
+  console.count('render')
 
   const toolbarOptions = [
-    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+    [{ 'header': [1, 2, 3, false] }],
     [{ 'font': [] }],
     ['bold', 'italic', 'underline'],
     ['blockquote', 'code-block'],
+    [{ align: '' }, { align: 'center' }, { align: 'right' }],
+    [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
     ['link', 'image']
   ];
 
   const reactQuillProps: ReactQuillProps = {
     value: value,
-    onChange: setvalue,
+    onChange: (v) => {
+      setValue(v);
+      setSaved(false);
+    },
     modules: {
       toolbar: toolbarOptions
     }
@@ -56,7 +64,9 @@ const Home: NextPage = () => {
               <SaveButton saved={saved} setSaved={setSaved} />
             </div>
 
-            <DynamicReactQuill {...reactQuillProps} className='h-[70%]' id='editor'></DynamicReactQuill>
+            {/* <button onClick={() => setIsPreviewing(!isPreviewing)}>{isPreviewing ? 'Edit' : 'Preview'}</button> */}
+
+            <DynamicReactQuill {...reactQuillProps} className='h-[70%]' id='editor' readOnly={isPreviewing}></DynamicReactQuill>
           </div>
         </div>
 
@@ -65,4 +75,13 @@ const Home: NextPage = () => {
   );
 }
 
-export default Home
+export default Home;
+
+// quill
+//   ql-toolbar
+//     ql-formats 
+//     ql-formats 
+//     ql-formats 
+//     ql-formats
+//   ql-container
+//     ql-editor 
