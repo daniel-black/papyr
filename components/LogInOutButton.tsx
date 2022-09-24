@@ -12,7 +12,7 @@ const LogInOutButton = (): JSX.Element => {
       <div className="flex items-center space-x-10">
         <div className="flex items-center space-x-2">
           {session.user?.image && (
-            <img className="h-7 w-7 rounded-full" src={session.user?.image} alt="profile picture" />
+            <img className="h-8 w-8 rounded-full border-2 border-stone-900" src={session.user?.image} alt="profile picture" />
           )}
           <p className="text-stone-300">{session.user?.name}</p>
         </div>

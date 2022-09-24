@@ -7,27 +7,33 @@ import { ReactQuillProps } from 'react-quill';
 import SaveButton from '../components/SaveButton';
 import Title from '../components/Title';
 import Navbar from '../components/Navbar';
+import { toolbarOptions } from '../utils/quillOptions';
+import { useSession } from 'next-auth/react';
+import axios from 'axios';
+import { Post } from '../utils/types';
 
 const DynamicReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 
 const Home: NextPage = () => {
+  const { data: session } = useSession();
   const [saved, setSaved] = useState(false);
   const [title, setTitle] = useState('');
   const [value, setValue] = useState('');
   const [isPreviewing, setIsPreviewing] = useState(false);
 
-  console.count('render')
+  console.count('render');
 
-  const toolbarOptions = [
-    [{ 'header': [1, 2, 3, false] }],
-    [{ 'font': [] }],
-    ['bold', 'italic', 'underline'],
-    ['blockquote', 'code-block'],
-    [{ align: '' }, { align: 'center' }, { align: 'right' }],
-    [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
-    ['link', 'image']
-  ];
+  if (saved && session?.user?.email && session?.user?.name) {
+    const post: Post = {
+      author: session.user.name,
+      email: session.user.email,
+      title,
+      post: value
+    };
+
+    axios.post('/api/post', post);
+  }
 
   const reactQuillProps: ReactQuillProps = {
     value: value,
